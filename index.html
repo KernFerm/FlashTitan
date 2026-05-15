@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlashTitan</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="adminModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+        <p class="section-kicker">Before you start</p>
+        <h2 id="adminModalTitle">FlashTitan needs admin permission</h2>
+        <p id="adminModalMessage" class="sidebar-copy">
+          FlashTitan needs Administrator privileges to create real bootable USB and SD media.
+        </p>
+        <div class="modal-actions">
+          <button id="adminRestartButton" class="primary-button">Restart as Administrator</button>
+          <button id="adminModalClose" class="secondary-button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="settingsModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-card modal-card-wide" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <p class="section-kicker">Preferences</p>
+        <h2 id="settingsModalTitle">FlashTitan settings</h2>
+        <div class="review-grid">
+          <label class="field">
+            <span>View</span>
+            <select id="experienceModeSelect">
+              <option value="simple">Simple</option>
+              <option value="advanced">Detailed</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Verification</span>
+            <select id="verificationModeSelect">
+              <option value="full">Full check</option>
+              <option value="quick">Quick check</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Checksum rule</span>
+            <select id="checksumPolicySelect">
+              <option value="optional">Optional</option>
+              <option value="required">Required</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Speed</span>
+            <select id="performanceProfileSelect">
+              <option value="safe">Safer</option>
+              <option value="balanced">Balanced</option>
+              <option value="fast">Faster</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Write chunk size (MiB)</span>
+            <input id="chunkSizeInput" type="number" min="1" max="32" value="4" />
+          </label>
+          <label class="field">
+            <span>Keep logs for (days)</span>
+            <input id="logRetentionInput" type="number" min="1" max="90" value="14" />
+          </label>
+          <label class="checkbox-row">
+            <input id="settingsAutoHashToggle" type="checkbox" />
+            <span>Check image hash automatically</span>
+          </label>
+          <label class="checkbox-row">
+            <input id="settingsAdvancedToggle" type="checkbox" />
+            <span>Show extra drive details by default</span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button id="openLogsButton" class="secondary-button">Open Logs Folder</button>
+          <button id="settingsSaveButton" class="primary-button">Save Settings</button>
+          <button id="settingsCloseButton" class="ghost-button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-shell">
+      <header class="hero simple-hero">
+        <div class="hero-copy-wrap">
+          <p class="eyebrow">Bootable USB maker</p>
+          <h1>FlashTitan</h1>
+          <p class="hero-copy">Choose an image, choose a USB drive, then make it bootable.</p>
+          <div class="hero-actions">
+            <button id="selectImageButton" class="primary-button">Choose Image</button>
+            <button id="refreshDevicesButton" class="secondary-button">Refresh USB Drives</button>
+            <button id="advancedToggleButton" class="ghost-button">Show Advanced</button>
+          </div>
+        </div>
+        <div class="hero-mini-panel">
+          <section class="top-hint-card status-card">
+            <p class="section-kicker">Status</p>
+            <div class="status-card-row">
+              <span id="statusBadge" class="chip neutral">Waiting for an image</span>
+              <span id="operationState" class="subtle-text">Ready when you are.</span>
+            </div>
+          </section>
+          <details class="top-hint-card collapsible-card hero-log-card">
+            <summary>
+              <span>
+                <span class="section-kicker">Recent notes</span>
+                <strong>What's happening now</strong>
+              </span>
+            </summary>
+            <div class="details-body">
+              <div id="logPanel" class="log-panel"></div>
+            </div>
+          </details>
+          <section class="top-hint-card">
+            <p class="section-kicker">Helpful note</p>
+            <h2>What FlashTitan is checking</h2>
+            <div id="badgeTray" class="badge-tray">
+              <span class="chip">Removable Device</span>
+              <span class="chip accent">Verification Enabled</span>
+              <span class="chip">SHA256 Ready</span>
+            </div>
+          </section>
+        </div>
+      </header>
+
+      <main class="simple-layout">
+        <section class="workflow-card main-flow-card">
+          <div class="section-header compact-header">
+            <div>
+              <p class="section-kicker">Easy steps</p>
+              <h2>Three simple steps</h2>
+            </div>
+          </div>
+
+          <div class="simple-step-grid">
+            <article class="step-card active-step">
+              <span class="step-index">1</span>
+              <h3>Choose your image</h3>
+              <p>Pick the image file you want to place on the USB drive.</p>
+              <label class="field">
+                <span>Official image list</span>
+                <select id="presetSelect">
+                  <option value="">Choose an official preset</option>
+                </select>
+              </label>
+              <div class="inline-actions">
+                <button id="loadPresetButton" class="secondary-button">Use Preset</button>
+                <button id="openPresetButton" class="ghost-button">Open Official Page</button>
+              </div>
+              <div id="imageAdvancedFields" class="review-grid advanced-panel hidden">
+                <div class="inline-actions top-actions">
+                  <button id="downloadImageButton" class="secondary-button">Download Image</button>
+                </div>
+                <label class="field">
+                  <span>Download link</span>
+                  <input id="downloadUrlInput" spellcheck="false" placeholder="Paste an image link here" />
+                </label>
+                <label id="downloadChecksumField" class="field">
+                  <span>Checksum (optional)</span>
+                  <input id="downloadChecksumInput" spellcheck="false" placeholder="Paste checksum if you have one" />
+                </label>
+              </div>
+              <div id="imageSummary" class="summary-panel empty-state">No image picked yet.</div>
+            </article>
+
+            <article class="step-card">
+              <span class="step-index">2</span>
+              <h3>Choose your USB drive</h3>
+              <p>Pick the removable drive you want to erase and use.</p>
+              <div class="inline-actions">
+                <label class="toggle playful-toggle">
+                  <input id="advancedModeToggle" type="checkbox" />
+                  <span>Show extra drive details</span>
+                </label>
+              </div>
+              <div id="deviceList" class="device-list empty-state">No removable drives found yet.</div>
+            </article>
+
+            <article class="step-card">
+              <span class="step-index">3</span>
+              <h3>Check before erasing</h3>
+              <p>Take one last look, then type CONFIRM to unlock the button.</p>
+              <div id="safetyAdvancedFields" class="review-grid advanced-panel hidden">
+                <label id="checksumField" class="field">
+                  <span>Compare with checksum (optional)</span>
+                  <input id="checksumInput" maxlength="128" spellcheck="false" placeholder="Paste SHA256 if you want to compare" />
+                </label>
+                <label class="checkbox-row">
+                  <input id="autoHashToggle" type="checkbox" checked />
+                  <span>Check the image automatically first</span>
+                </label>
+              </div>
+              <div class="review-grid compact-review-grid">
+                <label class="field">
+                  <span>Type CONFIRM</span>
+                  <input id="confirmInput" maxlength="32" spellcheck="false" placeholder="CONFIRM" />
+                </label>
+              </div>
+              <div id="safetyReview" class="summary-panel warning-panel">
+                Safety review is waiting for an image and a removable drive.
+              </div>
+            </article>
+
+            <article class="step-card final-step-card">
+              <span class="step-index">4</span>
+              <h3>Make the bootable drive</h3>
+              <p>Press the button when everything looks right.</p>
+              <div class="progress-block">
+                <div class="progress-row">
+                  <span id="progressLabel">All quiet</span>
+                  <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+                <div class="metrics-grid">
+                  <div><span class="metric-label">Speed</span><strong id="speedValue">0 MB/s</strong></div>
+                  <div><span class="metric-label">Time left</span><strong id="etaValue">--</strong></div>
+                  <div><span class="metric-label">Moved so far</span><strong id="bytesValue">0 B / 0 B</strong></div>
+                </div>
+              </div>
+              <div class="inline-actions">
+                <button id="startFlashButton" class="danger-button">Make Bootable Drive</button>
+                <button id="cancelButton" class="ghost-button" disabled>Stop</button>
+              </div>
+              <div class="mini-panels">
+                <div id="verificationPanel" class="summary-panel compact-panel">Verification is resting.</div>
+                <div id="completionPanel" class="summary-panel compact-panel">Nothing has been flashed yet.</div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <aside class="sidebar simple-sidebar">
+          <section class="info-card">
+            <p class="section-kicker">File check</p>
+            <h2>How your file will be used</h2>
+            <div id="classificationPanel" class="summary-panel">
+              When you choose an image, FlashTitan will explain what it plans to do with it.
+            </div>
+          </section>
+
+          <details class="info-card collapsible-card">
+            <summary>
+              <span>
+                <span class="section-kicker">Extras</span>
+                <strong>More tools</strong>
+              </span>
+            </summary>
+            <div class="details-body">
+              <p class="sidebar-copy">
+                Open settings, logs, or a support bundle only if you need them.
+              </p>
+              <div class="stacked-actions">
+                <button id="openSettingsButton" class="secondary-button wide-button">Open Settings</button>
+                <button id="openLogsCardButton" class="ghost-button wide-button">Open Logs</button>
+                <button id="createSupportBundleButton" class="ghost-button wide-button">Create Support Bundle</button>
+              </div>
+            </div>
+          </details>
+
+          <details class="info-card collapsible-card">
+            <summary>
+              <span>
+                <span class="section-kicker">Optional help</span>
+                <strong>Raspberry Pi USB boot info</strong>
+              </span>
+            </summary>
+            <div class="details-body">
+              <p class="sidebar-copy">
+                FlashTitan can point you to Raspberry Pi USB boot instructions, but it does not change firmware settings for you.
+              </p>
+              <button id="piDocsButton" class="secondary-button wide-button">Open Raspberry Pi Guide</button>
+            </div>
+          </details>
+        </aside>
+      </main>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
