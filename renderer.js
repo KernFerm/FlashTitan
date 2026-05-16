@@ -123,6 +123,16 @@ function formatEta(seconds) {
   return `${minutes}m ${remainingSeconds}s`;
 }
 
+function setSelectOptions(select, options) {
+  select.replaceChildren();
+  for (const optionData of options) {
+    const option = document.createElement("option");
+    option.value = typeof optionData.value === "string" ? optionData.value : "";
+    option.textContent = typeof optionData.label === "string" ? optionData.label : "";
+    select.appendChild(option);
+  }
+}
+
 function appendLog(message, tone = "info") {
   const entry = document.createElement("div");
   entry.className = "log-entry";
@@ -343,7 +353,7 @@ function renderDevices() {
   }
 
   elements.deviceList.innerHTML = state.devices
-    .map((device) => {
+    .map((device, index) => {
       const selected = state.selectedDeviceIds.includes(device.id);
       const warningMarkup =
         Array.isArray(device.warnings) && device.warnings.length
@@ -381,7 +391,7 @@ function renderDevices() {
                   ? "This drive is selected."
                   : "This looks like a removable drive."
             }</span>
-            <button class="secondary-button" data-device-id="${escapeHtml(device.id)}" ${device.blocked ? "disabled" : ""}>
+            <button class="secondary-button device-select-button" data-device-index="${escapeHtml(String(index))}" ${device.blocked ? "disabled" : ""}>
               ${selected ? "Remove Drive" : "Use This Drive"}
             </button>
           </div>
@@ -390,7 +400,14 @@ function renderDevices() {
     })
     .join("");
 
-  elements.deviceList.querySelectorAll("[data-device-id]").forEach((button) => {
+  elements.deviceList.querySelectorAll(".device-select-button").forEach((button) => {
+    const deviceIndex = Number(button.dataset.deviceIndex);
+    const device = Number.isInteger(deviceIndex) ? state.devices[deviceIndex] : null;
+    if (!device) {
+      return;
+    }
+    button.removeAttribute("data-device-index");
+    button.dataset.deviceId = device.id;
     button.addEventListener("click", () => {
       const deviceId = sanitizeText(button.dataset.deviceId);
       const currentlySelected = state.selectedDeviceIds.includes(deviceId);
@@ -569,30 +586,29 @@ async function downloadImage() {
 }
 
 async function loadPresets() {
-  elements.presetSelect.innerHTML = '<option value="">Loading official presets...</option>';
+  setSelectOptions(elements.presetSelect, [{ value: "", label: "Loading official presets..." }]);
   elements.presetSelect.disabled = true;
   try {
     state.presets = await window.flashTitanApi.getPresets();
     if (!Array.isArray(state.presets) || state.presets.length === 0) {
-      elements.presetSelect.innerHTML = '<option value="">No presets are available right now</option>';
+      setSelectOptions(elements.presetSelect, [{ value: "", label: "No presets are available right now" }]);
       elements.operationState.textContent = "FlashTitan could not load the preset catalog right now.";
       appendLog("No official presets were returned.", "error");
       return;
     }
-    elements.presetSelect.innerHTML = ['<option value="">Choose an official preset</option>']
-      .concat(
-        state.presets.map(
-          (preset) =>
-            `<option value="${escapeHtml(preset.id)}">${escapeHtml(preset.name)} - ${escapeHtml(
-              preset.vendor || "Unknown vendor"
-            )}</option>`
-        )
+    setSelectOptions(
+      elements.presetSelect,
+      [{ value: "", label: "Choose an official preset" }].concat(
+        state.presets.map((preset) => ({
+          value: sanitizeText(preset.id),
+          label: `${sanitizeText(preset.name)} - ${sanitizeText(preset.vendor || "Unknown vendor")}`
+        }))
       )
-      .join("");
+    );
     elements.presetSelect.disabled = false;
     appendLog(`Loaded ${state.presets.length} official presets.`, "success");
   } catch (error) {
-    elements.presetSelect.innerHTML = '<option value="">Could not load presets</option>';
+    setSelectOptions(elements.presetSelect, [{ value: "", label: "Could not load presets" }]);
     elements.operationState.textContent = "FlashTitan could not load the preset catalog.";
     appendLog(error.message || "Failed to load official presets.", "error");
   }
