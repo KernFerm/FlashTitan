@@ -1,6 +1,6 @@
 # Security Policy
 
-FlashTitan version covered by this policy: `0.0.25`
+FlashTitan version covered by this policy: `0.0.27`
 
 ## Supported versions
 
