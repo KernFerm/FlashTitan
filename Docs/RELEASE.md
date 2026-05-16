@@ -1,6 +1,6 @@
 # FlashTitan Release Notes
 
-## Version `0.0.25`
+## Current version `0.0.27`
 
 ### User-facing changes
 
@@ -30,6 +30,10 @@
 ### License
 
 - FlashTitan is open source under the Apache License 2.0
+
+## Historical release notes
+
+- [0.0.25-RELEASE.md](0.0.25-RELEASE.md)
 
 ## Release contents
 
