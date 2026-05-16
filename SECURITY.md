@@ -6,7 +6,7 @@ FlashTitan version covered by this policy: `0.0.25`
 
 | Version | Supported |
 | --- | --- |
-| `0.0.25` | Yes |
+| `0.0.27` | Yes |
 | older development builds | No guarantee |
 
 ## Reporting a security issue
