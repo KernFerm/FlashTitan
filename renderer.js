@@ -391,7 +391,7 @@ function renderDevices() {
                   ? "This drive is selected."
                   : "This looks like a removable drive."
             }</span>
-            <button class="secondary-button device-select-button" data-device-index="${escapeHtml(String(index))}" ${device.blocked ? "disabled" : ""}>
+            <button class="secondary-button device-select-button" ${device.blocked ? "disabled" : ""}>
               ${selected ? "Remove Drive" : "Use This Drive"}
             </button>
           </div>
@@ -400,16 +400,13 @@ function renderDevices() {
     })
     .join("");
 
-  elements.deviceList.querySelectorAll(".device-select-button").forEach((button) => {
-    const deviceIndex = Number(button.dataset.deviceIndex);
-    const device = Number.isInteger(deviceIndex) ? state.devices[deviceIndex] : null;
+  elements.deviceList.querySelectorAll(".device-select-button").forEach((button, buttonIndex) => {
+    const device = state.devices[buttonIndex] || null;
     if (!device) {
       return;
     }
-    button.removeAttribute("data-device-index");
-    button.dataset.deviceId = device.id;
     button.addEventListener("click", () => {
-      const deviceId = sanitizeText(button.dataset.deviceId);
+      const deviceId = sanitizeText(device.id);
       const currentlySelected = state.selectedDeviceIds.includes(deviceId);
       if (currentlySelected) {
         state.selectedDeviceIds = state.selectedDeviceIds.filter((item) => item !== deviceId);
