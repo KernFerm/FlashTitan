@@ -13,6 +13,9 @@ It is built for two kinds of people:
 ### Download FlashTitan Installer
 [FlashTitan](https://github.com/KernFerm/FlashTitan/releases/download/V0028-FlashTitan/FlashTitan-0.0.28-Installer.exe)
 
+### Have Any Issues?
+[Create Issue](https://github.com/KernFerm/FlashTitan/issues)
+
 ## What FlashTitan does ✨
 
 - opens local image files like `.iso` and `.img`
