@@ -7,6 +7,9 @@ It is built for two kinds of people:
 - everyday users who want a simpler, safer flashing flow 🙂
 - technical users who still want checks, logs, presets, and diagnostics 🛠️
 
+### Help make the project better
+[Contribute](https://github.com/KernFerm/FlashTitan/blob/main/CONTRIBUTING.md)
+
 ## What FlashTitan does ✨
 
 - opens local image files like `.iso` and `.img`
