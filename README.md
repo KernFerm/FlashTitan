@@ -164,3 +164,6 @@ FlashTitan is open source under the Apache License 2.0.
 ## Current version 🏷️
 
 Current app version: `0.0.40`
+
+## Screenshot
+![flashtitan](https://github.com/KernFerm/FlashTitan/blob/main/flash-titan.png)
