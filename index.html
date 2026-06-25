@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlashTitan</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="etcher-shell">
+    <div id="adminModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+        <p class="section-kicker">Before you start</p>
+        <h2 id="adminModalTitle">FlashTitan needs admin permission</h2>
+        <p id="adminModalMessage" class="sidebar-copy">
+          FlashTitan needs Administrator privileges to create real bootable USB and SD media.
+        </p>
+        <div class="modal-actions">
+          <button id="adminRestartButton" class="primary-button">Restart as Administrator</button>
+          <button id="adminModalClose" class="secondary-button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="settingsModal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-card modal-card-wide" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <p class="section-kicker">Preferences</p>
+        <h2 id="settingsModalTitle">FlashTitan settings</h2>
+        <div class="review-grid">
+          <label class="field">
+            <span>View</span>
+            <select id="experienceModeSelect">
+              <option value="simple">Simple</option>
+              <option value="advanced">Detailed</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Verification</span>
+            <select id="verificationModeSelect">
+              <option value="full">Full check</option>
+              <option value="quick">Quick check</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Checksum rule</span>
+            <select id="checksumPolicySelect">
+              <option value="optional">Optional</option>
+              <option value="required">Required</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Speed</span>
+            <select id="performanceProfileSelect">
+              <option value="safe">Safer</option>
+              <option value="balanced">Balanced</option>
+              <option value="fast">Faster</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Write chunk size (MiB)</span>
+            <input id="chunkSizeInput" type="number" min="1" max="32" value="4" />
+          </label>
+          <label class="field">
+            <span>Keep logs for (days)</span>
+            <input id="logRetentionInput" type="number" min="1" max="90" value="14" />
+          </label>
+          <label class="checkbox-row">
+            <input id="settingsAutoHashToggle" type="checkbox" />
+            <span>Check image hash automatically</span>
+          </label>
+          <label class="checkbox-row">
+            <input id="settingsAdvancedToggle" type="checkbox" />
+            <span>Show extra drive details by default</span>
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button id="openLogsButton" class="secondary-button">Open Logs Folder</button>
+          <button id="settingsSaveButton" class="primary-button">Save Settings</button>
+          <button id="settingsCloseButton" class="ghost-button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="etcher-app">
+      <header class="etcher-topbar">
+        <div class="topbar-brand">
+          <div class="brand-mark"></div>
+          <span>FlashTitan</span>
+        </div>
+        <div class="topbar-actions">
+          <button id="openSettingsButton" class="icon-button" aria-label="Open settings">⚙</button>
+          <button id="piDocsButton" class="icon-button" aria-label="Open help">?</button>
+        </div>
+      </header>
+
+      <main class="etcher-main">
+        <section class="etcher-logo-band">
+          <div class="center-brand">
+            <div class="brand-mark large"></div>
+            <strong>FlashTitan</strong>
+          </div>
+        </section>
+
+        <section class="etcher-flow">
+          <article class="etcher-stage">
+            <div class="stage-icon">+</div>
+            <button id="selectImageButton" class="main-stage-button primary-stage-button">Flash from file</button>
+            <div class="support-links">
+              <button id="downloadImageButton" class="text-action-button">Flash from URL</button>
+              <button id="loadPresetButton" class="text-action-button">Use preset</button>
+            </div>
+          </article>
+
+          <div class="flow-connector" aria-hidden="true"></div>
+
+          <article class="etcher-stage">
+            <div class="stage-icon drive-icon">◫</div>
+            <button id="refreshDevicesButton" class="main-stage-button neutral-stage-button">Select target</button>
+            <div class="support-links">
+              <button id="openPresetButton" class="text-action-button">Open official page</button>
+              <button id="advancedToggleButton" class="text-action-button">Show advanced</button>
+            </div>
+          </article>
+
+          <div class="flow-connector" aria-hidden="true"></div>
+
+          <article class="etcher-stage">
+            <div class="stage-icon bolt-icon">⚡</div>
+            <button id="startFlashButton" class="main-stage-button neutral-stage-button">Flash!</button>
+            <div class="support-links">
+              <button id="cancelButton" class="text-action-button" disabled>Stop</button>
+              <button id="createSupportBundleButton" class="text-action-button">Support bundle</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="inline-progress-dock">
+          <div class="bottom-progress-topline">
+            <span id="statusBadge" class="chip neutral">Waiting for an image</span>
+            <span id="operationState" class="subtle-text">Ready when you are.</span>
+          </div>
+          <div class="progress-bar bottom-progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+          <div class="bottom-progress-metrics">
+            <span id="progressLabel">All quiet</span>
+            <strong id="progressPercent">0%</strong>
+            <span id="speedValue">0 MB/s</span>
+            <span id="etaValue">--</span>
+            <span id="bytesValue">0 B / 0 B</span>
+          </div>
+        </section>
+
+        <section class="compact-info-grid">
+          <div id="imageSummary" class="compact-panel-card">No image picked yet.</div>
+          <div id="deviceList" class="compact-panel-card">No removable drives found yet.</div>
+          <div id="completionPanel" class="compact-panel-card">Nothing has been flashed yet.</div>
+        </section>
+
+        <section class="compact-info-grid secondary-grid">
+          <div id="classificationPanel" class="compact-panel-card">
+            FlashTitan will explain how it plans to handle the image after you choose one.
+          </div>
+          <div id="safetyReview" class="compact-panel-card">
+            Safety review is waiting for an image and a removable drive.
+          </div>
+          <div id="appMetaPanel" class="compact-panel-card">
+            FlashTitan is loading its runtime details and release guidance.
+          </div>
+        </section>
+
+        <section id="imageAdvancedFields" class="hidden advanced-strip">
+          <label class="field">
+            <span>Download link</span>
+            <input id="downloadUrlInput" spellcheck="false" placeholder="Paste an image link here" />
+          </label>
+          <label id="downloadChecksumField" class="field">
+            <span>Checksum (optional)</span>
+            <input id="downloadChecksumInput" spellcheck="false" placeholder="Paste checksum if you have one" />
+          </label>
+          <label class="field">
+            <span>Official image list</span>
+            <select id="presetSelect">
+              <option value="">Choose an official preset</option>
+            </select>
+          </label>
+        </section>
+
+        <section id="safetyAdvancedFields" class="hidden advanced-strip">
+          <label id="checksumField" class="field">
+            <span>Compare with checksum (optional)</span>
+            <input id="checksumInput" maxlength="128" spellcheck="false" placeholder="Paste SHA256 if you want to compare" />
+          </label>
+          <label class="checkbox-row compact-check">
+            <input id="autoHashToggle" type="checkbox" checked />
+            <span>Check the image automatically first</span>
+          </label>
+          <label class="checkbox-row compact-check">
+            <input id="advancedModeToggle" type="checkbox" />
+            <span>Show extra drive details</span>
+          </label>
+          <label class="field">
+            <span>Type CONFIRM</span>
+            <input id="confirmInput" maxlength="32" spellcheck="false" placeholder="CONFIRM" />
+          </label>
+        </section>
+
+        <details class="bottom-tools">
+          <summary>More tools</summary>
+          <div class="bottom-tools-actions">
+            <button id="openLogsCardButton" class="ghost-button">Open Logs</button>
+            <button id="copyDiagnosticsButton" class="ghost-button">Copy Diagnostics</button>
+          </div>
+          <div id="verificationPanel" class="compact-panel-card">Verification is resting.</div>
+          <div id="logPanel" class="compact-panel-card log-panel"></div>
+        </details>
+      </main>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
