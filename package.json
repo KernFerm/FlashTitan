@@ -1,6 +1,6 @@
 {
   "name": "flashtitan",
-  "version": "0.0.47",
+  "version": "0.0.55",
   "description": "FlashTitan is a Windows-first Electron utility for safely preparing removable media with strong guardrails.",
   "main": "main.js",
   "author": "BubblesTheDev",
@@ -82,8 +82,8 @@
     "drivelist": "^12.0.2"
   },
   "devDependencies": {
-    "electron": "^42.5.0",
+    "electron": "^43.1.0",
     "electron-builder": "^26.15.3",
-    "javascript-obfuscator": "^5.4.3"
+    "javascript-obfuscator": "^5.4.7"
   }
 }
