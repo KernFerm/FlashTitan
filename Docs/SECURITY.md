@@ -1,12 +1,12 @@
 # Security Policy
 
-FlashTitan version covered by this policy: `0.0.47`
+FlashTitan version covered by this policy: `0.0.55`
 
 ## Supported versions
 
 | Version | Supported |
 | --- | --- |
-| `0.0.47` | Yes |
+| `0.0.55` | Yes |
 | older development builds | No guarantee |
 
 ## Reporting a security issue
@@ -32,14 +32,15 @@ FlashTitan aims to:
 - sanitize paths, URLs, checksums, and IPC payloads
 - block unsafe renderer navigation and popup behavior
 
-## Technical notes
+## Technical controls
 
 - renderer uses `contextIsolation: true`
 - renderer uses `nodeIntegration: false`
 - renderer uses `sandbox: true`
 - privileged actions are exposed through the preload bridge only
+- IPC access is allowlisted through the bridge and main-process policy layer
 - write operations require Administrator privileges on Windows
-- internal and likely system drives are blocked in the normal picker
+- internal and likely system drives are blocked in the normal picker flow
 
 ## Diagnostics and support bundles
 
