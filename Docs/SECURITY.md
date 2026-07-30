@@ -1,12 +1,16 @@
 # Security Policy
 
-FlashTitan version covered by this policy: `0.0.55`
+![Covered Version](https://img.shields.io/badge/covered%20version-0.0.70-blue)
+![Security Model](https://img.shields.io/badge/renderer-sandboxed-success)
+![IPC Policy](https://img.shields.io/badge/IPC-allowlisted-important)
+
+FlashTitan version covered by this policy: `0.0.70`
 
 ## Supported versions
 
 | Version | Supported |
 | --- | --- |
-| `0.0.55` | Yes |
+| `0.0.70` | Yes |
 | older development builds | No guarantee |
 
 ## Reporting a security issue
