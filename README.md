@@ -1,8 +1,6 @@
-
-
 # FlashTitan
 
-![Version](https://img.shields.io/badge/version-0.0.55-blue)
+![Version](https://img.shields.io/badge/version-0.0.70-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D6)
 ![Tests](https://img.shields.io/badge/tests-32%2F32%20passing-success)
 ![License](https://img.shields.io/badge/license-Apache%202.0-green)
@@ -172,4 +170,4 @@ FlashTitan is open source under the Apache License 2.0.
 
 ## Current version
 
-Current app version: `0.0.55`
+Current app version: `0.0.70`
