@@ -1,25 +1,32 @@
+
+
 # FlashTitan
 
-FlashTitan is a Windows app for making bootable USB drives from operating system images.
+![Version](https://img.shields.io/badge/version-0.1.0-blue)
+![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D6)
+![Tests](https://img.shields.io/badge/tests-32%2F32%20passing-success)
+![License](https://img.shields.io/badge/license-Apache%202.0-green)
 
-It is designed to feel simple for everyday users while still giving advanced users the checks, logs, and diagnostics they need when something goes wrong.
+FlashTitan is a Windows-first Electron app for safely creating bootable USB and SD media from operating system images.
+
+It is designed to stay approachable for everyday users while still giving advanced users the validation, logs, and diagnostics they need when something goes wrong.
 
 ## Why use FlashTitan
 
-- make bootable USB drives from common OS images
-- use a simple three-step flow
-- stay focused on removable USB media, not internal drives
-- verify finished writes for extra confidence
-- collect diagnostics and support bundles when you need help
+- create bootable removable media from common OS images
+- use a focused three-step flow
+- keep the normal path centered on removable targets, not internal drives
+- verify completed writes for added confidence
+- collect diagnostics and support bundles when troubleshooting
 
-## What FlashTitan supports
+## Platform and format support
 
-### Windows versions
+### Supported host OS
 
 - Windows 10
 - Windows 11
 
-### Image formats
+### Supported image inputs
 
 - `.iso`
 - `.img`
@@ -29,89 +36,91 @@ It is designed to feel simple for everyday users while still giving advanced use
 
 Archive formats are supported when they contain a flashable `.iso` or `.img`.
 
-## Simple flow
+## Main workflow
 
-FlashTitan keeps the main path straightforward:
+FlashTitan keeps the primary path simple:
 
 1. Choose an image
-2. Choose the USB drive
+2. Choose the removable target
 3. Click `Flash!`
 
-If only one safe removable USB drive is connected, FlashTitan can auto-select it after refresh to keep things moving.
+If exactly one safe removable device is connected after refresh, FlashTitan can auto-select it to reduce extra clicks.
 
-## How to use it
+## Basic usage
 
 1. Open FlashTitan as Administrator
 2. Click `Flash from file`
-3. Choose your `.iso`, `.img`, or supported archive
+3. Choose an `.iso`, `.img`, or supported archive
 4. Click `Refresh USB Drives` if needed
-5. Make sure the selected target is your removable USB drive
+5. Confirm the selected target is your removable device
 6. Review the erase warning
 7. Click `Flash!`
 8. Wait for writing and verification to finish
-9. Boot the target computer from the USB drive
+9. Boot the target machine from the prepared media
 
-## Other ways to get an image
+## Other image sources
 
-### Use presets
+### Official presets
 
-FlashTitan includes a preset list for common official downloads.
+FlashTitan includes an official preset catalog for common downloads.
 
 1. Open the preset list
 2. Choose a preset
 3. Click `Use preset`
 4. If a direct download is available, use `Download image`
-5. If the vendor page opens instead, download the image there and then bring it back into FlashTitan
+5. If the vendor page opens instead, download the image there and then load it back into FlashTitan
 
-### Use a direct URL
+### Direct download URL
 
-Advanced mode includes support for direct image links when you already know the source you want to use.
+Advanced use also supports pasting a direct image URL when you already know the source you want.
 
-## Safety
+## Safety model
 
 FlashTitan is built to reduce common flashing mistakes:
 
-- removable USB drives are the normal target
-- internal and likely system drives are blocked in the normal flow
-- the selected drive is validated before writing starts
-- clear erase warnings are shown before destructive actions
-- Administrator rights are required for real writes
+- removable media is the intended target in the normal flow
+- internal and likely system drives are blocked in the normal picker
+- the selected target is validated before writing starts
+- destructive actions are preceded by explicit warnings
+- real write operations require Administrator rights on Windows
 
-No flasher can guarantee boot success on every machine, so final results still depend on the target hardware and firmware settings.
+No flasher can guarantee boot success on every machine, so final results still depend on the target hardware, firmware, and image quality.
 
-## What happens with different image types
+## Image handling behavior
 
-- Windows installer ISOs use a Windows-specific USB creation path
+- Windows installer ISOs use the Windows-specific creation path
 - Linux and hybrid bootable ISOs are usually written directly
-- bootable ISOs with valid boot signals can still fall back to raw-write even if they do not match older signatures
+- other bootable ISOs can fall back to `raw-write` when BIOS or UEFI boot signals are detected
 - `.img` files are written directly
-- supported archives are unpacked first, then the flashable image is used
+- supported archives are extracted first and then flashed from the contained image
 
-## Troubleshooting and support
+## Diagnostics and troubleshooting
 
-FlashTitan can help you troubleshoot problems with:
+FlashTitan includes tools that help when a flash fails or a result needs review:
 
 - persistent logs
 - copied diagnostics snapshots
 - support bundles with useful technical details
 
-These tools are helpful when a flash fails, verification reports a mismatch, or you want to share a clean bug report.
+These are useful for verification mismatches, failed writes, and clean bug reports.
 
 ## Installation
 
-### Recommended
+### Recommended installer
 
-Use the Windows installer:
+Use the packaged Windows installer:
 
-- `FlashTitan-<version>-Installer.exe`
+- `FlashTitan-0.1.0-Installer.exe`
 
-### Portable packaged app
+This is the file most end users should download and run.
 
-You can also run:
+### Packaged app output
+
+You can also run the unpacked Windows build:
 
 - `dist/win-unpacked/FlashTitan.exe`
 
-This is mainly useful for testing and local packaging checks.
+This is mainly useful for packaging checks and local validation.
 
 ## Run from source
 
@@ -120,30 +129,31 @@ npm install
 npm start
 ```
 
-Useful build commands:
+Useful project commands:
 
 ```bash
+npm test
 npm run pack
 npm run build
-npm test
+npm run pack:protected
+npm run dist:protected
 ```
 
 ## Current status
 
-FlashTitan is working and usable, but broad public-release confidence still depends on more real hardware validation.
+FlashTitan is usable today, but broad public-release confidence still depends on wider real-hardware validation.
 
 Current limits to keep in mind:
 
-- real-world boot reliability still depends on Windows drive access behavior and the target hardware firmware
-- some images still need wider real-device coverage before they should be called broadly proven
-- archive extraction depends on the bundled 7-Zip tooling
-- packaged dependencies were refreshed for the `0.0.47` release line
-- the flashing engine is Windows-only in this build
-- code signing and broader release polish are still follow-up work
+- real-world boot reliability still depends on Windows drive behavior and target firmware
+- some images still need wider device coverage before they should be treated as broadly proven
+- archive extraction depends on bundled `7zip-bin` tooling
+- code signing is still follow-up work
+- the flashing engine in this repo is Windows-only
 
 ## Raspberry Pi note
 
-FlashTitan can open Raspberry Pi USB boot documentation, but it does not change Raspberry Pi firmware, EEPROM, or boot order automatically.
+FlashTitan can point users to Raspberry Pi USB boot guidance, but it does not change Raspberry Pi firmware, EEPROM, or boot order automatically.
 
 ## License
 
@@ -164,4 +174,4 @@ FlashTitan is open source under the Apache License 2.0.
 
 ## Current version
 
-Current app version: `0.0.47`
+Current app version: `0.1.0`
