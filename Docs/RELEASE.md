@@ -1,50 +1,46 @@
-# FlashTitan Release Notes
+# FlashTitan 0.1.0
 
-![Current Version](https://img.shields.io/badge/current-0.0.70-blue)
-![Release Status](https://img.shields.io/badge/release-Windows%20packaging-informational)
-![Tests](https://img.shields.io/badge/tests-32%2F32%20passing-success)
+## Download
 
-## Current version `0.0.70`
+Download and run:
 
-> Documentation and packaging alignment update
+- `FlashTitan-0.1.0-Installer.exe`
 
-### User-facing changes
+After installing, open FlashTitan from the Start menu or desktop shortcut.
 
-- kept the Etcher-style three-step flow centered on choosing an image, choosing a removable target, and clicking `Flash!`
-- continued support for official presets, direct download URLs, copied diagnostics, and support bundles
-- clearer Administrator guidance for real write operations and removable-media safety expectations
+## What This Release Is For
 
-### Technical changes
+FlashTitan helps you create bootable USB drives and SD cards from operating system image files.
 
-- bumped the application version to `0.0.70`
-- current packaged toolchain is `electron@^43.2.0`, `electron-builder@^26.15.3`, and `javascript-obfuscator@^5.5.0`
-- current runtime dependencies include `drivelist@^12.0.2` and `7zip-bin@^5.2.0`
-- Windows packaging supports both standard and protected release flows through `npm run build`, `npm run dist:win`, and `npm run dist:protected`
-- installer artifacts are produced as `FlashTitan-<version>-Installer.exe`
+Supported image types:
 
-### Test status
+- `.iso`
+- `.img`
+- `.zip`
+- `.xz`
+- `.gz`
 
-Current automated test status:
+## How To Use It
 
-- `npm test`
-- `32/32` tests passing
+1. Open FlashTitan as Administrator.
+2. Choose an image file.
+3. Choose your USB drive or SD card.
+4. Click `Flash!`.
+5. Wait for writing and verification to finish.
 
-### Release contents
+## Important Safety Note
 
-A normal Windows release should include:
+Flashing will erase the selected USB drive or SD card. Check the selected drive carefully before starting.
 
-- `FlashTitan-<version>-Installer.exe`
-- packaged Windows app output
-- license agreement page
-- safety acknowledgment page
+FlashTitan is designed to avoid internal system drives, but you should still confirm the target before clicking `Flash!`.
 
-### Known follow-up work
+## What's New
 
-- code signing
-- broader real-hardware validation
-- cleaner public release distribution polish
-- more tested-image and tested-hardware coverage
+- Updated release version to `0.1.0`.
+- Refreshed the Windows installer release.
+- Kept the simple image, target, flash workflow.
+- Kept verification after writing so users can confirm the media was written correctly.
 
-## Historical release notes
+## Need Help?
 
-- [0.0.27-RELEASE.md](0.0.27-RELEASE.md)
+If something fails, use FlashTitan's logs, diagnostics, or support bundle tools when reporting the issue.
